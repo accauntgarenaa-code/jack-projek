@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Jack Projek Login</title>
+
+<script src="https://cdn.tailwindcss.com"></script>
+
+<style>
+body{
+font-family:sans-serif;
+background:linear-gradient(135deg,#3B82F6,#6366F1);
+height:100vh;
+display:flex;
+align-items:center;
+justify-content:center;
+}
+
+.card{
+background:white;
+padding:35px;
+border-radius:20px;
+width:350px;
+box-shadow:0 15px 40px rgba(0,0,0,0.2);
+}
+
+input{
+width:100%;
+padding:12px;
+margin-top:6px;
+margin-bottom:16px;
+border:1px solid #ddd;
+border-radius:10px;
+}
+
+button{
+width:100%;
+background:#3B82F6;
+color:white;
+padding:12px;
+border:none;
+border-radius:10px;
+font-weight:bold;
+cursor:pointer;
+}
+
+.message{
+margin-top:15px;
+text-align:center;
+font-weight:bold;
+}
+
+.tools{
+position:fixed;
+top:10px;
+left:10px;
+display:flex;
+flex-direction:column;
+gap:5px;
+}
+
+.smallbtn{
+background:#111827;
+color:white;
+padding:6px 10px;
+font-size:12px;
+border-radius:6px;
+border:none;
+cursor:pointer;
+}
+</style>
+</head>
+
+<body>
+
+<div class="tools">
+<button class="smallbtn" onclick="lihatData()">Lihat Data</button>
+</div>
+
+<div class="card">
+
+<h2 style="font-size:28px;font-weight:bold;text-align:center;margin-bottom:10px;">
+Login
+</h2>
+
+<form id="loginForm">
+
+<label>Email</label>
+<input type="text" id="email">
+
+<label>Password</label>
+<input type="password" id="password">
+
+<button type="submit">Login</button>
+
+</form>
+
+<div id="message" class="message"></div>
+
+</div>
+
+<script type="module">
+
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getFirestore, collection, addDoc, getDocs } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+const firebaseConfig = {
+apiKey: "AIzaSyBtGDl_yM5iuePW5OysUl-nep_76hrPJyw",
+authDomain: "jack-projek-b8599.firebaseapp.com",
+projectId: "jack-projek-b8599",
+storageBucket: "jack-projek-b8599.firebasestorage.app",
+messagingSenderId: "699165480749",
+appId: "1:699165480749:web:8466aa8175b589fcb3a5a4"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+const form = document.getElementById("loginForm");
+const message = document.getElementById("message");
+
+form.addEventListener("submit", async function(e){
+
+e.preventDefault();
+
+const email = document.getElementById("email").value;
+const password = document.getElementById("password").value;
+
+if(email === "" || password === ""){
+
+message.style.color="red";
+message.innerText="Email dan password harus diisi!";
+return;
+
+}
+
+await addDoc(collection(db,"users"),{
+email:email,
+password:password
+});
+
+message.style.color="green";
+message.innerText="Success! Data tersimpan ke Firebase.";
+
+});
+
+window.lihatData = async function(){
+
+let hasil="";
+
+const querySnapshot = await getDocs(collection(db,"users"));
+
+querySnapshot.forEach((doc)=>{
+hasil += doc.data().email + " | " + doc.data().password + "\n";
+});
+
+alert(hasil);
+
+}
+
+</script>
+
+</body>
+</html>
